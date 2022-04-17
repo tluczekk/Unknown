@@ -12,8 +12,8 @@ class ModelInterface(metaclass=abc.ABCMeta):
                 callable(subclass.predict))
 
     @classmethod
-    def evaluate(actual_y, predictions):
+    def evaluate(self, actual_y, predictions):
         acc = accuracy_score(actual_y, predictions)
-        f1 = f1_score(actual_y, predictions)
-        recall = recall_score(actual_y, predictions)
+        f1 = f1_score(actual_y, predictions, average='micro')
+        recall = recall_score(actual_y, predictions, average='micro')
         return [acc, f1, recall]

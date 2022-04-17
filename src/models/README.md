@@ -1,4 +1,4 @@
-##models module
+## models module
 
 Place to add the different Pattern Recognition models
 
