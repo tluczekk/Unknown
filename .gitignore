@@ -1,3 +1,14 @@
 .idea
 data/*.csv
+
+### Python ###
+# Byte-compiled / optimized / DLL files
 __pycache__/
+*.py[cod]
+*$py.class
+
+### macOS ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
