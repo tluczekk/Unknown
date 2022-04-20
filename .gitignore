@@ -1,5 +1,6 @@
 .idea
 data/*.csv
+data/
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
