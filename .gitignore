@@ -1,6 +1,7 @@
 .idea
 data/*.csv
 data/
+src/*.jpg
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
