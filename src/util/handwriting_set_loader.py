@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 
 TRAIN_FILE = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../data/train.txt'))
-TEST_FILE = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../data/test.txt'))
+TEST_FILE = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../data/valid.txt'))
 IMAGES_LOCATION = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../data/images/'))
 
 def get_training_set():

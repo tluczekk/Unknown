@@ -45,10 +45,10 @@ def get_ground_truth(data):
     word_texts = []
 
     for line in data:
-
+        print(line)
         im = cv2.imread(line)
         gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
-        id = int(line.split('/')[-1].split('.')[0])
+        id = int(line.split('\\')[-1].split('.')[0])
 
         for _, c in enumerate(_get_bounds(id)):
 
