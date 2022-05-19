@@ -1,6 +1,8 @@
 import os
 import numpy as np
 from sklearn import metrics
+from fastdtw import fastdtw
+from scipy.spatial.distance import euclidean
 
 # Getting features for genuine signatures
 def get_genuine(path):
@@ -83,3 +85,12 @@ def precision_recall_curve(y_true, pred_scores, thresholds):
         recalls.append(recall)
 
     return precisions, recalls
+
+def get_max_for_users(user_features):
+    maxs = []
+    for user in user_features:
+        user_intra_distances = [fastdtw(user[i], user[j], dist=euclidean)[0] for i in range(len(user)) for j in range(i, len(user))]
+        user_max = np.max(user_intra_distances)
+        maxs.append(user_max)
+
+    return maxs
