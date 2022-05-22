@@ -1,6 +1,7 @@
 import numpy as np
 import os
 import cv2
+from scipy.stats import zscore
 
 SVG_LOCATION = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../data/locations/'))
 TRANS_LOCATION = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../data/transcription.txt'))
@@ -45,10 +46,10 @@ def get_ground_truth(data):
     word_texts = []
 
     for line in data:
-
+        print(line)
         im = cv2.imread(line)
         gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
-        id = int(line.split('/')[-1].split('.')[0])
+        id = int(line.split('\\')[-1].split('.')[0])
 
         for _, c in enumerate(_get_bounds(id)):
 
@@ -65,9 +66,16 @@ def get_ground_truth(data):
                 rl = int(w/2)
                 roi = gray[y:y + h, x:x + w]
                 thresh = cv2.threshold(roi, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
-                padded = cv2.copyMakeBorder(thresh, top=tb, bottom=tb, left=rl, right=rl, borderType=cv2.BORDER_CONSTANT, value=(0, 0, 0))
-                padded = padded.astype("float32") / 255.0 #convert to pixel values (1 or 0)
-                word_images.append(padded)
+                (tH, tW) = thresh.shape
+                dX = int(max(0, 100 - tW) / 2.0)
+                dY = int(max(0, 100 - tH) / 2.0)
+                padded = cv2.copyMakeBorder(thresh, top=dY, bottom=dY,
+                                            left=dX, right=dX, borderType=cv2.BORDER_CONSTANT,
+                                            value=(0, 0, 0))
+                padded = cv2.resize(padded, (100, 100), interpolation=cv2.INTER_NEAREST).astype("float32")
+                normalized = padded.astype("float32") / 255.0  # convert to pixel values (1 or 0)
+                #normalized = zscore(np.array(padded), axis=None, ddof=1)
+                word_images.append(normalized)
 
     return word_images, word_texts
     

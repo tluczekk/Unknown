@@ -1,9 +1,10 @@
 import os
 import cv2
+from scipy.stats import zscore
 import numpy as np
 
 TRAIN_FILE = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../data/train.txt'))
-TEST_FILE = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../data/test.txt'))
+TEST_FILE = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../data/valid.txt'))
 IMAGES_LOCATION = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../data/images/'))
 
 def get_training_set():
@@ -54,9 +55,18 @@ def preprocess(data):
 
                 roi = gray[y:y + h, x:x + w]
                 thresh = cv2.threshold(roi, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
-                padded = cv2.copyMakeBorder(thresh, top=tb, bottom=tb, left=rl, right=rl, borderType=cv2.BORDER_CONSTANT, value=(0, 0, 0))
-                padded = padded.astype("float32") / 255.0 #convert to pixel values (1 or 0)
-                words.append(padded)
+
+                (tH, tW) = thresh.shape
+                dX = int(max(0, 100 - tW) / 2.0)
+                dY = int(max(0, 100 - tH) / 2.0)
+                # pad the image and force 32x32 dimensions
+                padded = cv2.copyMakeBorder(thresh, top=dY, bottom=dY,
+                                            left=dX, right=dX, borderType=cv2.BORDER_CONSTANT,
+                                            value=(0, 0, 0))
+                padded = cv2.resize(padded, (100, 100)).astype("float32")
+                #padded.astype("float32") / 255.0  # convert to pixel values (1 or 0)
+                normalized = zscore(np.array(padded), axis=None, ddof=1)
+                words.append(normalized)
 
                 #uncomment to paint the rectangle around selection for debuging!
                 #cv2.rectangle(inputImageCopy, (x, y), (x + w, y + h), (0, 255, 0), 2)
