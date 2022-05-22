@@ -38,7 +38,7 @@ def get_features(image):
     
     features = np.array(features)
 
-    # Gradient pass
+    #Gradient pass
     #for window in range(1, image_array.shape[1]):
     #    features[window, 5] = features[window, 0] - features[window - 1, 0]
     #    features[window, 6] = features[window, 1] - features[window - 1, 1]
