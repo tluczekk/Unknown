@@ -20,6 +20,7 @@ validate = get_test_set()
 # Getting images and texts associated with them
 word_images, word_texts = get_ground_truth(train)
 word_images_valid, word_texts_valid = get_ground_truth(validate)
+# Cleaning the labels
 word_texts = [clean_label(w_text) for w_text in word_texts]
 word_texts_valid = [clean_label(w_text_v) for w_text_v in word_texts_valid]
 # Normalizing images
