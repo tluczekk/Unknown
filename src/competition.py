@@ -10,7 +10,7 @@ from util.handwriting_features import *
 from util.handwriting_ground_truth import *
 from scipy.spatial.distance import euclidean
 
-"""
+
 with open('../data/mnist-test/mnist_test.csv') as ts:
     mnist_csv = np.loadtxt(ts, delimiter=',', dtype=int)
 
@@ -19,7 +19,7 @@ with open('../data/mnist-csv-format/mnist_train.csv') as tr:
     training_samples = training[:, 1:]
     training_labels = training[:, 0]
 
-"""
+
 
 """
 SVM model
@@ -29,14 +29,14 @@ SVM model
 MLP model
 """
 
-"""
+
 mlp = MLP()
 estimator = mlp.get_estimator(training_samples, training_labels)
 with open('results/mlp.txt', 'w') as f:
     for digit in mnist_csv:
         f.write(str(estimator.predict([digit])[0]) + '\n')
 
-"""
+
 
 """
 CNN model
@@ -89,7 +89,7 @@ with open('results/kws.csv', 'w') as f:
 Signatures
 """
 
-"""
+
 USERS = os.path.realpath(os.path.join(os.path.dirname(__file__), '../data/TestSignatures/users.txt'))
 genuine_signatures = get_genuine_test(USERS)
 verification_signatures = get_verification_test(USERS)
@@ -110,4 +110,4 @@ with open('results/sign-ver.csv', 'w') as f:
             i += 1
         f.write(line + '\n')
 
-"""
+
