@@ -18,6 +18,19 @@ def get_genuine(path):
 
     return all_users_genuine
 
+def get_genuine_test(path):
+    all_users_genuine = []
+    with open(path) as users:
+        for line in users.read().split('\n'):
+            if line != '':
+                user_features = [get_features(os.path.realpath(os.path.dirname(__file__) + '../../../data/TestSignatures/enrollment/' +
+                                    str(line) + '-g-' + str(i).zfill(2) + '.txt')) for i in range(1,6)]
+                all_users_genuine.append(user_features)
+
+    all_users_genuine = np.array(all_users_genuine, dtype=object)
+
+    return all_users_genuine
+
 # Getting features for verification signatures
 def get_verification(path):
     all_users_verification = []
@@ -25,6 +38,19 @@ def get_verification(path):
         for line in users.read().split('\n'):
             if line != '':
                 user_features = [get_features(os.path.realpath(os.path.dirname(__file__) + '../../../data/SignatureVerification/verification/' + 
+                                    str(line) + '-' + str(i).zfill(2) + '.txt')) for i in range(1,46)]
+                all_users_verification.append(user_features)
+    
+    all_users_verification = np.array(all_users_verification, dtype=object)
+
+    return all_users_verification
+
+def get_verification_test(path):
+    all_users_verification = []
+    with open(path) as users:
+        for line in users.read().split('\n'):
+            if line != '':
+                user_features = [get_features(os.path.realpath(os.path.dirname(__file__) + '../../../data/TestSignatures/verification/' + 
                                     str(line) + '-' + str(i).zfill(2) + '.txt')) for i in range(1,46)]
                 all_users_verification.append(user_features)
     
