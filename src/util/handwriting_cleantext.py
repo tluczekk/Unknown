@@ -7,6 +7,12 @@ def clean_label(label):
     # Returning label with dashes
     return '-'.join(letters_res)
 
+def clean_label_test(label):
+    letters = label.split(',')[0].split('-')
+    letters_res = [letter for letter in letters if len(letter) == 1]
+    # Returning label with dashes
+    return '-'.join(letters_res)
+
 # PRC method adjusted to KWS task
 def precision_recall_curve(y_true, pred_scores, thresholds):
     precisions = []
