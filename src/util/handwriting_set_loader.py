@@ -7,19 +7,19 @@ TRAIN_FILE = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../dat
 TEST_FILE = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../data/valid.txt'))
 IMAGES_LOCATION = os.path.realpath(os.path.join(os.path.dirname(__file__), '../../data/images/'))
 
-def get_training_set():
+def get_training_set(path=TRAIN_FILE, images_location=IMAGES_LOCATION):
     data = []
-    with open(TRAIN_FILE) as train_file:
+    with open(path) as train_file:
         for line in train_file:
-            data.append(IMAGES_LOCATION + "\\" + line.rstrip() + ".jpg")
+            data.append(images_location + "\\" + line.rstrip() + ".jpg")
     return data
 
 
-def get_test_set():
+def get_test_set(path=TEST_FILE, images_location=IMAGES_LOCATION):
     data = []
-    with open(TEST_FILE) as test_file:
+    with open(path) as test_file:
         for line in test_file:
-            data.append(IMAGES_LOCATION + "\\" + line.rstrip() + ".jpg")
+            data.append(images_location + "\\" + line.rstrip() + ".jpg")
     return data
 
 

@@ -20,7 +20,7 @@ class SVMClassifier(ModelInterface):
         print('done training SVM model!')
 
     def predict(self, test_set):
-        return self.model.predict(test_set.X)
+        return self.model.predict(test_set)
 
     def evaluate(self, test_set):
         predict = self.model.predict(test_set.X)
