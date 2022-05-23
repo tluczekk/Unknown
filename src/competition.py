@@ -1,4 +1,6 @@
 from models.mlp.MLP import MLP
+from models.svm.SVM import SVMClassifier
+from models.cnn.model_task2c import *
 import numpy as np
 from util.signatures_util import get_genuine_test, get_verification_test, get_max_for_users
 import os
@@ -9,6 +11,8 @@ from util.handwriting_normalization import *
 from util.handwriting_features import *
 from util.handwriting_ground_truth import *
 from scipy.spatial.distance import euclidean
+from collections import namedtuple
+
 
 
 with open('../data/mnist-test/mnist_test.csv') as ts:
@@ -25,10 +29,18 @@ with open('../data/mnist-csv-format/mnist_train.csv') as tr:
 SVM model
 """
 
+svm = SVMClassifier(kernel='linear', C=1e-05, gamma='scale')
+Train = namedtuple('Train', ['X', 'y'])
+train_mnist = Train(training_samples, training_labels)
+svm.train(train_mnist)
+with open('results/svm.txt', 'w') as f:
+    for digit in mnist_csv:
+        f.write(str(svm.predict([digit])[0]) + '\n')
+
+
 """
 MLP model
 """
-
 
 mlp = MLP()
 estimator = mlp.get_estimator(training_samples, training_labels)
@@ -37,10 +49,60 @@ with open('results/mlp.txt', 'w') as f:
         f.write(str(estimator.predict([digit])[0]) + '\n')
 
 
-
 """
 CNN model
 """
+
+import torch
+from torchvision import datasets
+from torchvision import transforms
+import torch.nn as nn
+import torch.optim as optim
+from torch.optim.lr_scheduler import ExponentialLR
+from torch.utils.data import Dataset
+import natsort
+from PIL import Image
+
+PATH = "../data"
+batch_size = 1
+
+
+# source https://discuss.pytorch.org/t/how-to-load-images-without-using-imagefolder/59999/3
+class CustomDataSet(Dataset):
+    def __init__(self, main_dir, transform):
+        self.main_dir = main_dir
+        self.transform = transform
+        all_imgs = os.listdir(main_dir)
+        self.total_imgs = natsort.natsorted(all_imgs)
+
+    def __len__(self):
+        return len(self.total_imgs)
+
+    def __getitem__(self, idx):
+        img_loc = os.path.join(self.main_dir, self.total_imgs[idx])
+        image = Image.open(img_loc).convert("RGB")
+        tensor_image = self.transform(image)
+        return tensor_image
+
+test_data = CustomDataSet(
+   PATH + "/mnist_test_png",
+   transforms.Compose([transforms.Grayscale(), transforms.ToTensor()])
+)
+testloader = torch.utils.data.DataLoader(test_data, batch_size=batch_size, shuffle=False, num_workers=2)
+
+model = PR_CNN()
+model.load_state_dict(torch.load('models/cnn/net.pth'))
+print("Loaded")
+predicted = []
+for images in testloader:
+    outputs = model(images)
+    _, pred = torch.max(outputs.data, 1)
+    predicted.append(pred)
+print("Scored")
+
+with open('results/cnn.txt', 'w') as f:
+    for res in predicted:
+        f.write(str(res.numpy()[0]) + '\n')
 
 """
 KWS
@@ -85,10 +147,10 @@ with open('results/kws.csv', 'w') as f:
         id_keyword += 1
         f.write(line+'\n')
 
+
 """
 Signatures
 """
-
 
 USERS = os.path.realpath(os.path.join(os.path.dirname(__file__), '../data/TestSignatures/users.txt'))
 genuine_signatures = get_genuine_test(USERS)
@@ -109,5 +171,4 @@ with open('results/sign-ver.csv', 'w') as f:
             line += ', ' + str(k + 1).zfill(2) + ', ' + str(verification_scores[i])
             i += 1
         f.write(line + '\n')
-
 
